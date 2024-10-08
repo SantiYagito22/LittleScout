@@ -10,7 +10,17 @@ const config: Config = {
     extend: {
       colors: {
         background: "var(--background)",
-        foreground: "var(--foreground)",
+        headline: "var(--primary-color)",
+        card_background:"var(card-background)",
+        card_heading: "var(--card-heading)",
+        paragraph: "var(--paragraph)",
+        button: "var(--button)",
+        button_text: "var(button-text)",
+        highlight: "var(--highlight)",
+        tertiary: "var(--tertiary)",
+        stroke: "var(--stroke)",
+        error_color: "var(-error)",
+        success_color: "var(--success-color)"
       },
     },
   },
