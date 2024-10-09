@@ -14,8 +14,8 @@
   --main: #b8c1ec;
   --tertiary: #eebbc3;
   --stroke: #121629;
-  --error-color: #FF6B6B;
-  --success-color: #76C7C1;
+  --error-color: #ff6b6b;
+  --success-color: #76c7c1;
 }
 
 body {
