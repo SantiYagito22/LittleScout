@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(req: NextRequest) {
-  const tokenExpiry: number = parseInt(req.cookies.get('app_token_expiry')?.value ?? '0', 10)
+  const tokenExpiry: number = parseInt(
+    req.cookies.get('app_token_expiry')?.value ?? '0',
+    10
+  )
   if (!req.cookies.has('app_access_token') || Date.now() >= tokenExpiry) {
     console.log('We need new token')
     const response = await fetch('https://id.twitch.tv/oauth2/token', {
@@ -19,9 +21,19 @@ export async function middleware(req: NextRequest) {
     const data = await response.json()
     const expiryDate = new Date(Date.now() + data.expires_in)
     const newResponse = NextResponse.next()
-    newResponse.cookies.set('app_access_token', data.access_token, {expires: expiryDate })
-    newResponse.cookies.set('app_token_expiry', expiryDate.toString() , {expires: expiryDate })
-    
+    newResponse.cookies.set('app_access_token', data.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: expiryDate,
+    })
+    newResponse.cookies.set('app_token_expiry', expiryDate.toString(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: expiryDate,
+    })
+
     return newResponse
   }
 
@@ -45,7 +57,7 @@ export const config = {
         { type: 'header', key: 'purpose', value: 'prefetch' },
       ],
     },
- 
+
     {
       source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
       has: [
@@ -53,7 +65,7 @@ export const config = {
         { type: 'header', key: 'purpose', value: 'prefetch' },
       ],
     },
- 
+
     {
       source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
       has: [{ type: 'header', key: 'x-present' }],
