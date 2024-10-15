@@ -4,18 +4,7 @@
 
 :root {
   --background: #232946;
-  --headline: #fffffe;
-  --card-background: #fffffe;
-  --card-heading: #232946;
   --paragraph: #b8c1ec;
-  --button: #eebbc3;
-  --button-text: #232946;
-  --highlight: #eebbc3;
-  --main: #b8c1ec;
-  --tertiary: #eebbc3;
-  --stroke: #121629;
-  --error-color: #ff6b6b;
-  --success-color: #76c7c1;
 }
 
 body {
