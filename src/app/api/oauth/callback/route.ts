@@ -2,6 +2,7 @@
 
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import { obtainExpiryDate } from '@/lib/utils'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -26,25 +27,43 @@ export async function GET(request: Request) {
         client_id: process.env.NEXT_PUBLIC_CLIENT_ID!,
         client_secret: process.env.CLIENT_SECRET!,
         code: code,
-        grant_type: 'client_credentials',
+        grant_type: 'authorization_code',
         redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URL!,
+        scope: 'user:read:email'
       }),
     })
 
     const data = await response.json()
-    const cookieStore = cookies()
-    const twoWeeks = 24 * 60 * 60 * 14 * 1000 //Expiration Date
+    const redirectUrl = new URL('/dashboard', request.url).toString()
+    const newResponse = NextResponse.redirect(redirectUrl)
+    const expiryDate = obtainExpiryDate(data.expires_in)
 
-    cookieStore.set({
-      name: 'access_token',
+    newResponse.cookies.set({
+      name: 'user_token',
       value: data.access_token,
       httpOnly: true,
       sameSite: 'lax',
-      expires: new Date(Date.now() + twoWeeks),
+      expires: expiryDate
     })
 
-    const redirectUrl = new URL('/dashboard', request.url).toString()
-    return NextResponse.redirect(redirectUrl)
+    newResponse.cookies.set({
+      name: 'user_refresh_token',
+      value: data.refresh_token,
+      httpOnly: true,
+      sameSite: 'lax',
+      expires: expiryDate,
+    })
+
+    newResponse.cookies.set({
+      name: 'user_token_expiry',
+      value: expiryDate.toString(),
+      httpOnly: true,
+      sameSite: 'lax',
+      expires: expiryDate,
+    })
+
+    
+    return newResponse
   } catch (error) {
     console.error(
       'OAuth Error:',

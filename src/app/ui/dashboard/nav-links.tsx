@@ -5,7 +5,7 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
 
-export default async function NavLinks() {
+export default function NavLinks() {
   const pathname = usePathname()
   const links = [
     {

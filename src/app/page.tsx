@@ -1,25 +1,17 @@
-'use client'
+import AuthenticateButton from './ui/landing-page/authenticate-button'
 import Link from 'next/link'
+import { checkUserToken } from '@/services/cookies-service'
+import { redirect } from 'next/navigation'
 
 export default function Home() {
-  function handleTwitchAuth() {
-    const clientId = process.env.NEXT_PUBLIC_CLIENT_ID
-    const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL
-
-    const twitchUrlAuthentication = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=user:read:email`
-
-    window.location.href = twitchUrlAuthentication
+  const hasToken = checkUserToken()
+  if(hasToken){
+    redirect('/dashboard')
   }
-
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="flex flex-col items-center justify-center gap-y-20">
       <h1 className="text-headline text-7xl font-bold">Little Scout</h1>
-      {/* <button
-        className="text-xl font-bold rounded-lg bg-button text-button_text p-3 hover:opacity-90 hover:bg-secondary_color"
-        onClick={handleTwitchAuth}
-      >
-        Authenticate with Twitch
-      </button> */}
+      <AuthenticateButton />
       <Link
         href={'dashboard'}
         className="text-xl font-bold rounded-lg bg-button text-button_text p-3 hover:opacity-90 hover:bg-secondary_color"
