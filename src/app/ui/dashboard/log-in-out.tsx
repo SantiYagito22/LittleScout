@@ -1,12 +1,14 @@
 'use client'
 
 import { PowerIcon } from '@heroicons/react/24/outline'
+import { handleTwitchAuth } from '@/lib/data'
 
 export default function LogInOut({ signedIn, logOut }: { signedIn: boolean, logOut: () => void }) {
   function handleClick() {
     if (signedIn) {
       logOut()
     } else {
+      handleTwitchAuth()
     }
   }
 
